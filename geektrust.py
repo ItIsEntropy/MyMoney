@@ -26,12 +26,15 @@ change_percentages: Dict[str, np.ndarray] = np.zeros(3)
 weights: np.ndarray = np.zeros(3)
 
 def perform_rebalance():
+    global current_month
     if current_month < 6:
         print('CANNOT_REBALANCE')
         return
-    pass
+    for n in range(current_month):
+        pass # TODO: rebal
 
 def increment_month():
+    global current_month
     if current_month == 12:
         current_month = 0
     else:
@@ -40,6 +43,8 @@ def increment_month():
         perform_rebalance()
 
 def perform_sip(values: List = None):
+    global sip_ammount
+    global pre_balance_portfolio
     if current_month < 2:
         print('ERROR: cannot do a SIP in JANUARY')
         return
@@ -49,13 +54,18 @@ def perform_sip(values: List = None):
     increment_month()
 
 def perform_allocate(values: List):
+    global pre_balance_portfolio
+    global weights
     if current_month > 1:
         print('Error: can only allocate in January')
     pre_balance_portfolio['JANUARY'] = np.array(values)
+    total = sum(values)
+    weights = np.array([(i/total) * 100 for i in values])
     increment_month()
     
 def perform_change(percentages: np.ndarray, month: str):
-    pass
+    global change_percentages
+    change_percentages[month] = np.array(percentages)
 
 def perform_balance(month: str):
     _ = [print(ammount, end=" ") for ammount in np.floor(post_balance_portfolio[month]).tolist() ]
@@ -67,8 +77,14 @@ def process_commands(command_file: str):
         perform_allocate(args[1:])
     elif args[0] == 'SIP':
         perform_sip()
-    pass
-
+    elif args[0] == 'BALANCE':
+        perform_balance(args[1])
+    elif args[0] == 'CHANGE':
+        perform_change(args[1:4])
+    elif args[0] == 'REBALANCE':
+        perform_rebalance()
+    else: 
+        print('ERROR: Unknown command')
 
 def read_file(file_path: Path):
     with open(file_path, mode='r') as f:
