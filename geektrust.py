@@ -1,6 +1,4 @@
 import sys
-from io import FileIO
-from tkinter import E
 from typing import Dict, List
 from pathlib import Path
 import numpy as np
@@ -22,17 +20,24 @@ months: Dict[int, str] = {
 pre_balance_portfolio: Dict[str, np.ndarray] = {}
 post_balance_portfolio: Dict[str, np.ndarray] = {}
 sip_ammount: np.ndarray = np.zeros(3)
-current_month: int = 0;
-change_percentages: Dict[str, np.ndarray] = {}
+current_month: int = 0
 weights: np.ndarray = {}
+
+def perform_balance(month: str):
+    for ammount in np.floor(post_balance_portfolio[month]).tolist():
+        print(ammount, end=" ")
 
 def perform_rebalance():
     global current_month
     if current_month < 6:
         print('CANNOT_REBALANCE')
         return
-    for n in range(current_month):
-        pass # TODO: rebal
+    for month in range(current_month):
+        percentage = np.divide(change_percentages[months[month]], np.array([100] *3))
+        change = np.multiply(pre_balance_portfolio[months[month]], percentage)
+        post_balance_portfolio[months[month]] =np.add(change, pre_balance_portfolio[months[month]], percentage)
+
+    perform_balance(months[current_month])
 
 def increment_month():
     global current_month
@@ -65,18 +70,12 @@ def perform_allocate(values: List):
     increment_month()
     
 def perform_change(percentages: np.ndarray, month: str):
-    global change_percentages
-    change_percentages[month] = np.array(percentages)
+    change_percentages = np.array(percentages)
 
-def perform_balance(month: str):
-    global post_balance_portfolio
-    for ammount in np.floor(post_balance_portfolio[month]).tolist():
-        print(ammount, end=" ")
 
 def process_commands(command_file: str):
     for line in command_file:
-        line = line.replace('\n', '')
-        line_argumants = line.split(' ')
+        line_argumants = line.replace('\n', '').split(' ')
         if line_argumants[0] == 'ALLOCATE':
             clean_args: List = [float(num) for num in line_argumants[1:]]
             perform_allocate(clean_args)
