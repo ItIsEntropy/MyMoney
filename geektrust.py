@@ -46,14 +46,7 @@ def increment_month():
 
 def perform_sip(sip_values: List = None):
     global sip_ammount
-    global pre_balance_portfolio
-    if current_month == 0:
-        print('ERROR: cannot do a SIP in JANUARY')
-        return
-    if sip_values is None:
-        pre_balance_portfolio[months[current_month]] = np.add(sip_ammount, pre_balance_portfolio[months[current_month - 1]])
-    else:
-        sip_ammount = np.array(sip_values)
+    sip_ammount = np.array(sip_values)
     
 def perform_allocate(values: List):
     global pre_balance_portfolio
