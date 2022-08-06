@@ -20,9 +20,10 @@ months: Dict[int, str] = {
 }
 pre_balance_portfolio: Dict[str, np.ndarray] = np.zeros(3)
 post_balance_portfolio: Dict[str, np.ndarray] = np.zeros(3)
-sip_ammount: np.array = np.zeros(3)
+sip_ammount: np.ndarray = np.zeros(3)
 current_month: int = 0;
 change_percentages: Dict[str, np.ndarray] = np.zeros(3)
+weights: np.ndarray = np.zeros(3)
 
 def perform_rebalance():
     if current_month < 6:
@@ -40,7 +41,7 @@ def increment_month():
 
 def perform_sip(values: List = None):
     if current_month < 2:
-        print('ERROR: cannot do a sip in JANUARY')
+        print('ERROR: cannot do a SIP in JANUARY')
         return
     if values is not None:
         sip_ammount = np.array(values)
