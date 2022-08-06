@@ -22,18 +22,23 @@ post_balance_portfolio: Dict[str, np.ndarray] = {}
 sip_ammount: np.ndarray = np.zeros(3)
 current_month: int = 0
 weights: np.ndarray = {}
+already_rebalanced: bool = False
 
 def perform_balance(month: str):
     _ = [print(ammount, end=" ") for ammount in np.floor(post_balance_portfolio[month]).tolist()]
         
 
 def perform_rebalance():
+    if already_rebalanced:
+        already_rebalanced = False
+        return
     if current_month < 6:
         print('CANNOT_REBALANCE')
         return
     # TODO: rebalance portfolio using weights
     print('incomplete')
     perform_balance(months[current_month])
+    already_rebalanced = True
 
 def increment_month():
     global current_month
