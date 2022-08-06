@@ -58,12 +58,11 @@ def perform_sip(sip_values: List = None):
 def perform_allocate(values: List):
     global pre_balance_portfolio
     global weights
-    if current_month > 1:
+    if current_month > 0:
         print('Error: can only allocate in January')
     pre_balance_portfolio['JANUARY'] = np.array(values)
     total = sum(values)
     weights = np.array([(i/total) * 100 for i in values])
-    increment_month()
     
 def perform_change(percentages: List, month: str):
     global post_balance_portfolio
