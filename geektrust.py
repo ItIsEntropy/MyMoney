@@ -74,21 +74,21 @@ def perform_balance(month: str):
         print(ammount, end=" ")
 
 def process_commands(command_file: str):
-    line: str = command_file.readline()
-    args = line.split(' ')
-    if args[0] == 'ALLOCATE':
-        clean_args: List = [float(num.replace('\n', '')) for num in args[1:]]
-        perform_allocate(clean_args)
-    elif args[0] == 'SIP':
-        perform_sip()
-    elif args[0] == 'BALANCE':
-        perform_balance(args[1])
-    elif args[0] == 'CHANGE':
-        perform_change(args[1:4])
-    elif args[0] == 'REBALANCE':
-        perform_rebalance()
-    else: 
-        print('ERROR: Unknown command')
+    for line in command_file:
+        args = line.split(' ')
+        if args[0] == 'ALLOCATE':
+            clean_args: List = [float(num.replace('\n', '')) for num in args[1:]]
+            perform_allocate(clean_args)
+        elif args[0] == 'SIP':
+            perform_sip()
+        elif args[0] == 'BALANCE':
+            perform_balance(args[1])
+        elif args[0] == 'CHANGE':
+            perform_change(args[1:4])
+        elif args[0] == 'REBALANCE':
+            perform_rebalance()
+        else: 
+            print('ERROR: Unknown command')
 
 def main(file_name: str):
     #file_name: str = sys.argv[1]
