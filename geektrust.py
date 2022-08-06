@@ -77,7 +77,8 @@ def process_commands(command_file: str):
     line: str = command_file.readline()
     args = line.split(' ')
     if args[0] == 'ALLOCATE':
-        perform_allocate(args[1:])
+        clean_args: List = [float(num.replace('\n', '')) for num in args[1:]]
+        perform_allocate(clean_args)
     elif args[0] == 'SIP':
         perform_sip()
     elif args[0] == 'BALANCE':
