@@ -28,13 +28,11 @@ def perform_balance(month: str):
         print(ammount, end=" ")
 
 def perform_rebalance():
-    global current_month
     if current_month < 6:
         print('CANNOT_REBALANCE')
         return
     # TODO: rebalance portfolio using weights
-        
-
+    print('incomplete')
     perform_balance(months[current_month])
 
 def increment_month():
@@ -67,9 +65,17 @@ def perform_allocate(values: List):
     weights = np.array([(i/total) * 100 for i in values])
     increment_month()
     
-def perform_change(percentages: np.ndarray, month: str):
-    change_percentages = np.array(percentages)
-    # TODO: apply SIP
+def perform_change(percentages: List, month: str):
+    global post_balance_portfolio
+    change_percentages: np.ndarray = np.array(percentages)
+    print(change_percentages)
+    print(np.array([100,100,100]))
+    perform_sip()
+    # TODO: apply changes
+    percentage: np.ndarray = np.divide(change_percentages, np.array([100, 100, 100]))
+    change: np.ndarray = np.multiply(pre_balance_portfolio[month], percentage)
+    post_balance_portfolio[month] =np.add(change, pre_balance_portfolio[month], percentage)
+    increment_month()
 
 
 
@@ -85,7 +91,7 @@ def process_commands(command_file: str):
         elif line_argumants[0] == 'BALANCE':
             perform_balance(line_argumants[1])
         elif line_argumants[0] == 'CHANGE':
-            perform_change(line_argumants[1:-1], line_argumants[-1])
+            perform_change([float(percentage.replace('%', '')) for percentage in line_argumants[1:-1]], line_argumants[-1])
         elif line_argumants[0] == 'REBALANCE':
             perform_rebalance()
         else: 
