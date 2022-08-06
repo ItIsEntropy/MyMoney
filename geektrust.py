@@ -46,12 +46,12 @@ def increment_month():
 def perform_sip(values: List = None):
     global sip_ammount
     global pre_balance_portfolio
-    if current_month < 2:
+    if current_month == 0:
         print('ERROR: cannot do a SIP in JANUARY')
         return
     if values is not None:
         sip_ammount = np.array(values)
-    pre_balance_portfolio[months[current_month]] = np.sum(sip_ammount, pre_balance_portfolio[months[current_month - 1]])
+    pre_balance_portfolio[months[current_month]] = np.add(sip_ammount, pre_balance_portfolio[months[current_month - 1]])
     increment_month()
 
 def perform_allocate(values: List):
@@ -75,17 +75,19 @@ def perform_balance(month: str):
 
 def process_commands(command_file: str):
     for line in command_file:
-        args = line.split(' ')
-        if args[0] == 'ALLOCATE':
-            clean_args: List = [float(num.replace('\n', '')) for num in args[1:]]
+        line = line.replace('\n', '')
+        line_argumants = line.split(' ')
+        if line_argumants[0] == 'ALLOCATE':
+            clean_args: List = [float(num) for num in line_argumants[1:]]
             perform_allocate(clean_args)
-        elif args[0] == 'SIP':
-            perform_sip()
-        elif args[0] == 'BALANCE':
-            perform_balance(args[1])
-        elif args[0] == 'CHANGE':
-            perform_change(args[1:4])
-        elif args[0] == 'REBALANCE':
+        elif line_argumants[0] == 'SIP':
+            clean_args = [float(num) for num in line_argumants[1:]]
+            perform_sip(clean_args)
+        elif line_argumants[0] == 'BALANCE':
+            perform_balance(line_argumants[1])
+        elif line_argumants[0] == 'CHANGE':
+            perform_change(line_argumants[1:-1], line_argumants[-1])
+        elif line_argumants[0] == 'REBALANCE':
             perform_rebalance()
         else: 
             print('ERROR: Unknown command')
