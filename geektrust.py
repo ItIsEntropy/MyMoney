@@ -5,7 +5,7 @@ import numpy as np
 
 months: Dict[int, str] = {
     0: 'JANUARY',
-    1: 'FEBUARY', 
+    1: 'FEBRUARY', 
     2: 'MARCH', 
     3: 'APRIL', 
     4: 'MAY', 
@@ -43,6 +43,7 @@ def increment_month():
         current_month += 1
     if current_month == 6 or current_month == 12:
         perform_rebalance()
+        print (f'\n\nmonth: {months[current_month]}, post rebalance: {post_balance_portfolio[months[current_month]]}')
 
 def perform_sip(sip_values):
     global sip_ammount
@@ -58,14 +59,16 @@ def perform_allocate(values: List):
     weights = np.array([(i/total) * 100 for i in values])
     
 def perform_change(percentages: List, month: str):
-    global post_balance_portfolio
     change_percentages: np.ndarray = np.array(percentages)
-    print(change_percentages)
-    print(np.array([100,100,100]))
+    if month != 'JANUARY':
+        print(f'\n\nmonth: {month}, last_mnt: {months[current_month - 1]} Sip ammount: {sip_ammount}')
+        pre_balance_portfolio[month] = np.add(sip_ammount, post_balance_portfolio[months[current_month - 1]])
+        print(f'\n\nmonth: {month}, post sip: {pre_balance_portfolio[month]}')
     # TODO: apply changes
     percentage: np.ndarray = np.divide(change_percentages, np.array([100, 100, 100]))
     change: np.ndarray = np.multiply(pre_balance_portfolio[month], percentage)
     post_balance_portfolio[month] =np.add(change, pre_balance_portfolio[month], percentage)
+    print (f'\n\nmonth: {month}, post change: {post_balance_portfolio[month]}')
     increment_month()
 
 
