@@ -32,10 +32,8 @@ def perform_rebalance():
     if current_month < 6:
         print('CANNOT_REBALANCE')
         return
-    for month in range(current_month):
-        percentage = np.divide(change_percentages[months[month]], np.array([100] *3))
-        change = np.multiply(pre_balance_portfolio[months[month]], percentage)
-        post_balance_portfolio[months[month]] =np.add(change, pre_balance_portfolio[months[month]], percentage)
+    # TODO: rebalance portfolio using weights
+        
 
     perform_balance(months[current_month])
 
@@ -48,17 +46,17 @@ def increment_month():
     if current_month == 6 or current_month == 12:
         perform_rebalance()
 
-def perform_sip(values: List = None):
+def perform_sip(sip_values: List = None):
     global sip_ammount
     global pre_balance_portfolio
     if current_month == 0:
         print('ERROR: cannot do a SIP in JANUARY')
         return
-    if values is not None:
-        sip_ammount = np.array(values)
-    pre_balance_portfolio[months[current_month]] = np.add(sip_ammount, pre_balance_portfolio[months[current_month - 1]])
-    increment_month()
-
+    if sip_values is None:
+        pre_balance_portfolio[months[current_month]] = np.add(sip_ammount, pre_balance_portfolio[months[current_month - 1]])
+    else:
+        sip_ammount = np.array(sip_values)
+    
 def perform_allocate(values: List):
     global pre_balance_portfolio
     global weights
@@ -71,6 +69,8 @@ def perform_allocate(values: List):
     
 def perform_change(percentages: np.ndarray, month: str):
     change_percentages = np.array(percentages)
+    # TODO: apply SIP
+
 
 
 def process_commands(command_file: str):
