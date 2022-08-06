@@ -24,8 +24,8 @@ current_month: int = 0
 weights: np.ndarray = {}
 
 def perform_balance(month: str):
-    for ammount in np.floor(post_balance_portfolio[month]).tolist():
-        print(ammount, end=" ")
+    _ = [print(ammount, end=" ") for ammount in np.floor(post_balance_portfolio[month]).tolist()]
+        
 
 def perform_rebalance():
     if current_month < 6:
