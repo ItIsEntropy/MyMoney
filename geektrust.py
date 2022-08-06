@@ -44,7 +44,7 @@ def increment_month():
     if current_month == 6 or current_month == 12:
         perform_rebalance()
 
-def perform_sip(sip_values: List = None):
+def perform_sip(sip_values):
     global sip_ammount
     sip_ammount = np.array(sip_values)
     
@@ -62,7 +62,6 @@ def perform_change(percentages: List, month: str):
     change_percentages: np.ndarray = np.array(percentages)
     print(change_percentages)
     print(np.array([100,100,100]))
-    perform_sip()
     # TODO: apply changes
     percentage: np.ndarray = np.divide(change_percentages, np.array([100, 100, 100]))
     change: np.ndarray = np.multiply(pre_balance_portfolio[month], percentage)
