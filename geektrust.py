@@ -20,7 +20,7 @@ months: Dict[int, str] = {
 pre_balance_portfolio: Dict[str, np.ndarray] = {}
 post_balance_portfolio: Dict[str, np.ndarray] = {}
 sip_ammount: np.ndarray = np.zeros(3)
-current_month: int = 0
+current_month_number: int = 0
 weights: np.ndarray = {}
 already_rebalanced: bool = False
 
@@ -29,26 +29,27 @@ def perform_balance(month: str):
         
 
 def perform_rebalance():
+    global already_rebalanced
     if already_rebalanced:
         already_rebalanced = False
         return
-    if current_month < 6:
+    if current_month_number < 6:
         print('CANNOT_REBALANCE')
         return
+    current_month: str = months[current_month_number]
+    total: int = np.sum(post_balance_portfolio[current_month])
+    print(f'\n\nmonth: {current_month}, total ammount: {total}')
     # TODO: rebalance portfolio using weights
     print('incomplete')
-    perform_balance(months[current_month])
+    perform_balance(current_month)
     already_rebalanced = True
 
 def increment_month():
-    global current_month
-    if current_month == 12:
-        current_month = 0
+    global current_month_number
+    if current_month_number == 12:
+        current_month_number = 0
     else:
-        current_month += 1
-    if current_month == 6 or current_month == 12:
-        perform_rebalance()
-        print (f'\n\nmonth: {months[current_month]}, post rebalance: {post_balance_portfolio[months[current_month]]}')
+        current_month_number += 1
 
 def perform_sip(sip_values):
     global sip_ammount
@@ -57,7 +58,7 @@ def perform_sip(sip_values):
 def perform_allocate(values: List):
     global pre_balance_portfolio
     global weights
-    if current_month > 0:
+    if current_month_number > 0:
         print('Error: can only allocate in January')
     pre_balance_portfolio['JANUARY'] = np.array(values)
     total = sum(values)
@@ -65,18 +66,20 @@ def perform_allocate(values: List):
     
 def perform_change(percentages: List, month: str):
     change_percentages: np.ndarray = np.array(percentages)
+
     if month != 'JANUARY':
-        print(f'\n\nmonth: {month}, last_mnt: {months[current_month - 1]} Sip ammount: {sip_ammount}')
-        pre_balance_portfolio[month] = np.add(sip_ammount, post_balance_portfolio[months[current_month - 1]])
-        print(f'\n\nmonth: {month}, post sip: {pre_balance_portfolio[month]}')
-    # TODO: apply changes
+        pre_balance_portfolio[month] = np.add(sip_ammount, post_balance_portfolio[months[current_month_number - 1]])
+
     percentage: np.ndarray = np.divide(change_percentages, np.array([100, 100, 100]))
     change: np.ndarray = np.multiply(pre_balance_portfolio[month], percentage)
+
     post_balance_portfolio[month] = np.floor(np.add(change, pre_balance_portfolio[month], percentage))
-    print (f'\n\nmonth: {month}, post change: {post_balance_portfolio[month]}')
+
+    if current_month_number == 6 or current_month_number == 12:
+        perform_rebalance()
+        print (f'\n\nmonth: {months[current_month_number]}, post rebalance: {post_balance_portfolio[months[current_month_number]]}')
+    
     increment_month()
-
-
 
 def process_commands(command_file: str):
     for line in command_file:
@@ -108,7 +111,6 @@ def main(file_name: str):
     with open(file_path, mode='r') as f:
         process_commands(f)
     
-
 if __name__ == "__main__" :
     file_name: str = sys.argv[1]
     main(file_name=file_name)
