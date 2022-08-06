@@ -19,12 +19,12 @@ months: Dict[int, str] = {
     10: 'NOVEMBER',
     11: 'DECEMBER'
 }
-pre_balance_portfolio: Dict[str, np.ndarray] = np.zeros(3)
-post_balance_portfolio: Dict[str, np.ndarray] = np.zeros(3)
+pre_balance_portfolio: Dict[str, np.ndarray] = {}
+post_balance_portfolio: Dict[str, np.ndarray] = {}
 sip_ammount: np.ndarray = np.zeros(3)
 current_month: int = 0;
-change_percentages: Dict[str, np.ndarray] = np.zeros(3)
-weights: np.ndarray = np.zeros(3)
+change_percentages: Dict[str, np.ndarray] = {}
+weights: np.ndarray = {}
 
 def perform_rebalance():
     global current_month
@@ -69,7 +69,9 @@ def perform_change(percentages: np.ndarray, month: str):
     change_percentages[month] = np.array(percentages)
 
 def perform_balance(month: str):
-    _ = [print(ammount, end=" ") for ammount in np.floor(post_balance_portfolio[month]).tolist() ]
+    global post_balance_portfolio
+    for ammount in np.floor(post_balance_portfolio[month]).tolist():
+        print(ammount, end=" ")
 
 def process_commands(command_file: str):
     line: str = command_file.readline()
@@ -96,12 +98,8 @@ def main(file_name: str):
     if not file_path.is_file():
         print("ERROR: Please enter a path to a valid file")
         return
-    try:
-        command_file: FileIO = open(file_path, mode='r')
-    except Exception as e:
-        pass
-    finally:
-        command_file.close()
+    with open(file_path, mode='r') as f:
+        process_commands(f)
     
 
 if __name__ == "__main__" :
