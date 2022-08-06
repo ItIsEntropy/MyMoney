@@ -67,7 +67,7 @@ def perform_change(percentages: List, month: str):
     # TODO: apply changes
     percentage: np.ndarray = np.divide(change_percentages, np.array([100, 100, 100]))
     change: np.ndarray = np.multiply(pre_balance_portfolio[month], percentage)
-    post_balance_portfolio[month] =np.add(change, pre_balance_portfolio[month], percentage)
+    post_balance_portfolio[month] = np.floor(np.add(change, pre_balance_portfolio[month], percentage))
     print (f'\n\nmonth: {month}, post change: {post_balance_portfolio[month]}')
     increment_month()
 
