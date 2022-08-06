@@ -1,5 +1,6 @@
 import sys
 from io import FileIO
+from tkinter import E
 from typing import Dict, List
 from pathlib import Path
 import numpy as np
@@ -86,24 +87,21 @@ def process_commands(command_file: str):
     else: 
         print('ERROR: Unknown command')
 
-def read_file(file_path: Path):
-    with open(file_path, mode='r') as f:
-        return f
-        
-
-
 def main(file_name: str):
     #file_name: str = sys.argv[1]
     file_path: Path = Path(file_name)
     if not file_path.exists():
         print("Error: The file path you've entered does not exist")
         return
-    elif not file_path.is_file():
+    if not file_path.is_file():
         print("ERROR: Please enter a path to a valid file")
         return
-    else:
-        command_file: FileIO = read_file(file_path)
-        process_commands(command_file)
+    try:
+        command_file: FileIO = open(file_path, mode='r')
+    except Exception as e:
+        pass
+    finally:
+        command_file.close()
     
 
 if __name__ == "__main__" :
