@@ -2,7 +2,7 @@ from pathlib import Path
 import unittest
 import os
 
-import geektrust
+import geektrust as geektrust
 
 class MyMoneyBalalncerTest(unittest.TestCase):
     test_fail_dir: Path = Path(os.getcwd()).joinpath('error_dir')
