@@ -26,6 +26,7 @@ already_rebalanced: bool = False
 
 def perform_balance(month: str):
     _ = [print(ammount, end=" ") for ammount in np.floor(post_balance_portfolio[month]).tolist()]
+    print('')
         
 
 def perform_rebalance():
@@ -38,7 +39,6 @@ def perform_rebalance():
         return
     current_month: str = months[current_month_number]
     total: int = np.sum(post_balance_portfolio[current_month])
-    print(f'\n\nmonth: {current_month}, total ammount: {total}')
     # TODO: rebalance portfolio using weights
     print('incomplete')
     perform_balance(current_month)
