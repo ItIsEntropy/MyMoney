@@ -40,8 +40,9 @@ def perform_rebalance():
         return
     current_month: str = months[current_month_number - 1]
     total: int = np.sum(post_balance_portfolio[current_month])
-    # TODO: rebalance portfolio using weights
-    print('incomplete')
+    desired_ammounts:np.ndarray = np.multiply(desired_percentages, np.array([total] * 3))
+    post_balance_portfolio[current_month] = np.floor(np.divide(desired_ammounts, 100))
+    print(f'desired_ammounts: {desired_ammounts}')
     perform_balance(current_month)
     already_rebalanced = True
 
