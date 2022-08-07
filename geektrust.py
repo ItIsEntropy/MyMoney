@@ -26,7 +26,7 @@ desired_percentages: np.ndarray = np.zeros(3)
 already_rebalanced: bool = False
 
 def perform_balance(month: str):
-    _ = [print(ammount, end=" ") for ammount in np.floor(post_balance_portfolio[month]).tolist()]
+    _ = [print(int(ammount), end=" ") for ammount in np.floor(post_balance_portfolio[month]).tolist()]
     print('')
         
 
@@ -42,7 +42,6 @@ def perform_rebalance():
     total: int = np.sum(post_balance_portfolio[current_month])
     desired_ammounts:np.ndarray = np.multiply(desired_percentages, np.array([total] * 3))
     post_balance_portfolio[current_month] = np.floor(np.divide(desired_ammounts, 100))
-    print(f'desired_ammounts: {desired_ammounts}')
     perform_balance(current_month)
     already_rebalanced = True
 
