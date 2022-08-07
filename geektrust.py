@@ -33,7 +33,7 @@ def perform_rebalance():
     if already_rebalanced:
         already_rebalanced = False
         return
-    if current_month_number < 6:
+    if current_month_number < 5:
         print('CANNOT_REBALANCE')
         return
     current_month: str = months[current_month_number]
@@ -75,7 +75,7 @@ def perform_change(percentages: List, month: str):
 
     post_balance_portfolio[month] = np.floor(np.add(change, pre_balance_portfolio[month], percentage))
 
-    if current_month_number == 6 or current_month_number == 12:
+    if current_month_number == 5 or current_month_number == 11:
         perform_rebalance()
         print (f'\n\nmonth: {months[current_month_number]}, post rebalance: {post_balance_portfolio[months[current_month_number]]}')
     
