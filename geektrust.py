@@ -15,7 +15,8 @@ months: Dict[int, str] = {
     8: 'SEPTEMBER', 
     9: 'OCTOBER',
     10: 'NOVEMBER',
-    11: 'DECEMBER'
+    11: 'DECEMBER',
+    12: 'JANUARY'
 }
 pre_balance_portfolio: Dict[str, np.ndarray] = {}
 post_balance_portfolio: Dict[str, np.ndarray] = {}
@@ -37,7 +38,7 @@ def perform_rebalance():
     if current_month_number < 5:
         print('CANNOT_REBALANCE')
         return
-    current_month: str = months[current_month_number]
+    current_month: str = months[current_month_number - 1]
     total: int = np.sum(post_balance_portfolio[current_month])
     # TODO: rebalance portfolio using weights
     print('incomplete')
@@ -65,6 +66,7 @@ def perform_allocate(values: List):
     desired_percentages = np.array([(i/total) * 100 for i in values])
     
 def perform_change(percentages: List, month: str):
+    
     change_percentages: np.ndarray = np.array(percentages)
 
     if month != 'JANUARY':
@@ -75,7 +77,7 @@ def perform_change(percentages: List, month: str):
 
     post_balance_portfolio[month] = np.floor(np.add(change, pre_balance_portfolio[month], percentage))
 
-    if current_month_number == 5 or current_month_number == 11:
+    if current_month_number == 6 or current_month_number == 12:
         perform_rebalance()    
     increment_month()
 
