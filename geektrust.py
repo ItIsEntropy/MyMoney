@@ -99,8 +99,8 @@ def process_commands(command_file: str):
         else: 
             print('ERROR: Unknown command')
 
-def main(file_name: str):
-    #file_name: str = sys.argv[1]
+def main():
+    file_name: str = sys.argv[1]
     file_path: Path = Path(file_name)
     if not file_path.exists():
         print("Error: The file path you've entered does not exist")
@@ -112,5 +112,4 @@ def main(file_name: str):
         process_commands(f)
     
 if __name__ == "__main__" :
-    file_name: str = sys.argv[1]
-    main(file_name=file_name)
+    main()
