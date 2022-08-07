@@ -104,10 +104,10 @@ def main():
     file_path: Path = Path(file_name)
     if not file_path.exists():
         print("Error: The file path you've entered does not exist")
-        return -1
+        sys.exit(-1) 
     if not file_path.is_file():
         print("ERROR: Please enter a path to a valid file")
-        return -2
+        sys.exit(-2)
     with open(file_path, mode='r') as f:
         process_commands(f)
     return 0
