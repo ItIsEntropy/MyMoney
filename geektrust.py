@@ -21,7 +21,7 @@ pre_balance_portfolio: Dict[str, np.ndarray] = {}
 post_balance_portfolio: Dict[str, np.ndarray] = {}
 sip_ammount: np.ndarray = np.zeros(3)
 current_month_number: int = 0
-weights: np.ndarray = {}
+desired_percentages: np.ndarray = np.zeros(3)
 already_rebalanced: bool = False
 
 def perform_balance(month: str):
@@ -57,12 +57,12 @@ def perform_sip(sip_values):
     
 def perform_allocate(values: List):
     global pre_balance_portfolio
-    global weights
+    global desired_percentages
     if current_month_number > 0:
         print('Error: can only allocate in January')
     pre_balance_portfolio['JANUARY'] = np.array(values)
     total = sum(values)
-    weights = np.array([(i/total) * 100 for i in values])
+    desired_percentages = np.array([(i/total) * 100 for i in values])
     
 def perform_change(percentages: List, month: str):
     change_percentages: np.ndarray = np.array(percentages)
