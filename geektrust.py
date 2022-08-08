@@ -1,7 +1,7 @@
 import sys
 from typing import Dict, List
 from pathlib import Path
-import numpy as np
+import math
 
 months: Dict[int, str] = {
     0: 'JANUARY',
@@ -18,15 +18,15 @@ months: Dict[int, str] = {
     11: 'DECEMBER',
     12: 'JANUARY'
 }
-pre_balance_portfolio: Dict[str, np.ndarray] = {}
-post_balance_portfolio: Dict[str, np.ndarray] = {}
-sip_ammount: np.ndarray = np.zeros(3)
+pre_balance_portfolio: Dict[str, List] = {}
+post_balance_portfolio: Dict[str, List] = {}
+sip_ammount: List = []
 current_month_number: int = 0
-desired_percentages: np.ndarray = np.zeros(3)
+desired_percentages: List = []
 already_rebalanced: bool = False
 
 def perform_balance(month: str):
-    _ = [print(int(ammount), end=" ") for ammount in np.floor(post_balance_portfolio[month]).tolist()]
+    _ = [print(math.floor(ammount), end=" ") for ammount in post_balance_portfolio[month]]
     print('')
         
 
@@ -39,9 +39,9 @@ def perform_rebalance():
         print('CANNOT_REBALANCE')
         return
     current_month: str = months[current_month_number - 1]
-    total: int = np.sum(post_balance_portfolio[current_month])
-    desired_ammounts:np.ndarray = np.multiply(desired_percentages, np.array([total] * 3))
-    post_balance_portfolio[current_month] = np.floor(np.divide(desired_ammounts, 100))
+    total: int = sum(post_balance_portfolio[current_month])
+    desired_ammounts:List = [desired_percentage * total for desired_percentage in desired_percentages]
+    post_balance_portfolio[current_month] = [math.floor(desired_ammount / 100) for desired_ammount in desired_ammounts]
     perform_balance(current_month)
     already_rebalanced = True
 
@@ -54,28 +54,32 @@ def increment_month():
 
 def perform_sip(sip_values):
     global sip_ammount
-    sip_ammount = np.array(sip_values)
+    sip_ammount = sip_values
     
 def perform_allocate(values: List):
     global pre_balance_portfolio
     global desired_percentages
     if current_month_number > 0:
         print('Error: can only allocate in January')
-    pre_balance_portfolio['JANUARY'] = np.array(values)
+    pre_balance_portfolio['JANUARY'] = values
     total = sum(values)
-    desired_percentages = np.array([(i/total) * 100 for i in values])
+    desired_percentages = [(i/total) * 100 for i in values]
     
 def perform_change(percentages: List, month: str):
     
-    change_percentages: np.ndarray = np.array(percentages)
+    change_percentages: List = percentages
 
     if month != 'JANUARY':
-        pre_balance_portfolio[month] = np.add(sip_ammount, post_balance_portfolio[months[current_month_number - 1]])
+        pre_balance_portfolio[month] = [
+            sip + portfolio_value for sip,portfolio_value  in zip(sip_ammount, post_balance_portfolio[months[current_month_number - 1]])
+        ]
 
-    percentage: np.ndarray = np.divide(change_percentages, np.array([100, 100, 100]))
-    change: np.ndarray = np.multiply(pre_balance_portfolio[month], percentage)
+    percentages: List = [change_percentage / 100 for change_percentage in change_percentages]
+    changes: List = [portfolio_value * percentage for portfolio_value, percentage in zip(pre_balance_portfolio[month], percentages)]
 
-    post_balance_portfolio[month] = np.floor(np.add(change, pre_balance_portfolio[month], percentage))
+    post_balance_portfolio[month] = [
+        math.floor(portfolio_value + change) for change, portfolio_value in zip(changes, pre_balance_portfolio[month])
+    ]
 
     if current_month_number == 6 or current_month_number == 12:
         perform_rebalance()    
